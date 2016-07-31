@@ -103,19 +103,14 @@ class ReCaptcha extends InputWidget
 	public $widgetOptions = [];
 
 	/**
-	 *	@var array Additional html widget options, such as `class`.
-	 */
-	public $recaptchaOptions = [];
-
-	/**
 	 * @throws \yii\base\InvalidConfigException
 	 */
 	public function init()
 	{
 		parent::init();
 
-		if (is_null($this->siteKey)) {
-			if (!is_null(Yii::$app->reCaptcha->siteKey)) {
+		if (null === $this->siteKey) {
+			if (null !== Yii::$app->reCaptcha->siteKey) {
 				$this->siteKey = Yii::$app->reCaptcha->siteKey;
 			} else {
 				throw new InvalidConfigException('Required `siteKey` param isn\'t set.');
@@ -133,31 +128,13 @@ class ReCaptcha extends InputWidget
 			'class' => 'g-recaptcha',
 			'data-sitekey' => $this->siteKey
 		];
-
-		if (!empty($this->jsCallback)) {
-			$divOptions['data-callback'] = $this->jsCallback;
-		}
-		if (!empty($this->jsExpiredCallback)) {
-			$divOptions['data-expired-callback'] = $this->jsExpiredCallback;
-		}
-		if (!empty($this->theme)) {
-			$divOptions['data-theme'] = $this->theme;
-		}
-		if (!empty($this->type)) {
-			$divOptions['data-type'] = $this->type;
-		}
-		if (!empty($this->size)) {
-			$divOptions['data-size'] = $this->size;
-		}
-		if (!empty($this->tabindex)) {
-			$divOptions['data-tabindex'] = $this->tabindex;
-		}
-
+		
 		if (isset($this->widgetOptions['class'])) {
 			Html::addCssClass($divOptions, $this->widgetOptions);
+			unset($this->widgetOptions['class']);
 		}
 
-		$divOptions = $divOptions + $this->widgetOptions;
+		$divOptions = ArrayHelper::merge($divOptions, $this->widgetOptions);
 
 		echo Html::tag('div', '', $divOptions);
 	}
@@ -209,21 +186,22 @@ class ReCaptcha extends InputWidget
 			$inputId = 'recaptcha-' . $this->name;
 		}
 
-		if (empty($this->jsCallback)) {
+		if (empty($this->widgetOptions['data-callback'])) {
 			$jsCode = "var recaptchaCallback = function(response){jQuery('#{$inputId}').val(response);};";
 		} else {
-			$jsCode = "var recaptchaCallback = function(response){jQuery('#{$inputId}').val(response); {$this->jsCallback}(response);};";
+			$jsCode = "var recaptchaCallback = function(response){jQuery('#{$inputId}').val(response); {$this->widgetOptions['data-callback']}(response);};";
 		}
 
-		$this->jsCallback = 'recaptchaCallback';
+		$this->widgetOptions['data-callback'] = 'recaptchaCallback';
 
-		if (empty($this->jsExpiredCallback)) {
+		if (empty($this->widgetOptions['data-expired-callback'])) {
 			$jsExpCode = "var recaptchaExpiredCallback = function(){jQuery('#{$inputId}').val('');};";
 		} else {
-			$jsExpCode = "var recaptchaExpiredCallback = function(){jQuery('#{$inputId}').val(''); {$this->jsExpiredCallback}(response);};";
+			$jsExpCode = "var recaptchaExpiredCallback = function(){jQuery('#{$inputId}').val(''); {$this->widgetOptions['data-expired-callback']}(response);};";
 		}
 
-		$this->jsExpiredCallback = 'recaptchaExpiredCallback';
+		$this->widgetOptions['data-expired-callback'] = 'recaptchaExpiredCallback';
+
 		$view->registerJs($jsCode, $view::POS_BEGIN);
 		$view->registerJs($jsExpCode, $view::POS_BEGIN);
 
