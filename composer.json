@@ -1,0 +1,21 @@
+{
+    "name": "alikdex/yii2-recaptcha",
+    "description": "reCaptcha without curl",
+    "type": "yii2-extension",
+    "keywords": ["yii2","google recaptcha2"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "AlikDex",
+            "email": "alikdex@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "alikdex\\recaptcha\\": ""
+        }
+    }
+}
