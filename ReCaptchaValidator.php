@@ -11,10 +11,10 @@ use yii\base\InvalidConfigException;
 use yii\helpers\Json;
 use yii\validators\Validator;
 /**
- *	ReCaptcha widget validator.
+ * ReCaptcha widget validator.
  *
- *	@author AliKDex
- *	@package alikdex\recaptcha
+ * @author AliKDex
+ * @package alikdex\recaptcha
  */
 class ReCaptchaValidator extends Validator
 {
