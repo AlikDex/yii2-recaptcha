@@ -9,13 +9,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 * Either run
 
 ```
-php composer.phar require --prefer-dist "alikdex/yii2-recaptcha" "dev-master"
+php composer.phar require --prefer-dist "alikdex/yii2-recaptcha" "1.0.0"
 ```
 
 or add
 
 ```json
-"alikdex/yii2-recaptcha" : "dev-master"
+"alikdex/yii2-recaptcha" : "1.0.0"
 ```
 
 to the `require` section of your application's `composer.json` file.
