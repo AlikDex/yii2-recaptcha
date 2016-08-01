@@ -48,7 +48,7 @@ class ReCaptchaValidator extends Validator
 		if ($this->message === null) {
 			$this->message = Yii::t('yii', 'The verification code is incorrect.');
 		}
-    }
+	}
 
 	/**
 	 * @param \yii\base\Model $model
@@ -67,18 +67,18 @@ class ReCaptchaValidator extends Validator
 		return "(function(messages){if(!grecaptcha.getResponse()){messages.push('{$message}');}})(messages);";
 	}
 
-    /**
-     * @param string $value
-     * @return array|null
-     * @throws Exception
-     */
-    protected function validateValue($value)
-    {
-        if (empty($value)) {
-            if (!($value = Yii::$app->request->post(self::CAPTCHA_RESPONSE_FIELD))) {
-                return [$this->message, []];
-            }
-        }
+	/**
+	 * @param string $value
+	 * @return array|null
+	 * @throws Exception
+	 */
+	protected function validateValue($value)
+	{
+		if (empty($value)) {
+			if (!($value = Yii::$app->request->post(self::CAPTCHA_RESPONSE_FIELD))) {
+				return [$this->message, []];
+			}
+		}
 
 		$response = $this->_submitHttpGet([
 			'secret' => $this->secret,
@@ -91,12 +91,12 @@ class ReCaptchaValidator extends Validator
 		else
 			$response = Json::decode($response, true);
 
-        if (!isset($response['success'])) {
-            throw new Exception('Invalid recaptcha verify response.');
-        }
+		if (!isset($response['success'])) {
+			throw new Exception('Invalid recaptcha verify response.');
+		}
 
-        return $response['success'] ? null : [$this->message, []];
-    }
+		return $response['success'] ? null : [$this->message, []];
+	}
 
 	/**
 	 * HTTP GET to communicate with reCAPTCHA server
