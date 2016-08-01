@@ -68,36 +68,6 @@ class ReCaptcha extends InputWidget
 	public $secret;
 
 	/**
-	 *	@var string The color theme of the widget. [[THEME_LIGHT]] (default) or [[THEME_DARK]]
-	 */
-	public $theme;
-
-	/**
-	 *	@var string The type of CAPTCHA to serve. [[TYPE_IMAGE]] (default) or [[TYPE_AUDIO]]
-	 */
-	public $type;
-
-	/**
-	 *	@var string The size of the widget. [[SIZE_NORMAL]] (default) or [[SIZE_COMPACT]]
-	 */
-	public $size;
-
-	/**
-	 *	@var int The tabindex of the widget
-	 */
-	public $tabindex;
-
-	/**
-	 *	@var string Your JS callback function that's executed when the user submits a successful CAPTCHA response.
-	 */
-	public $jsCallback;
-
-	/**
-	 *	@var string Your JS callback function that's executed when the recaptcha response expires and the user needs to solve a new CAPTCHA.
-	 */
-	public $jsExpiredCallback;
-
-	/**
 	 *	@var array Additional html widget options, such as `class`.
 	 */
 	public $widgetOptions = [];
