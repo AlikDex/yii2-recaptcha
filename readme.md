@@ -63,6 +63,16 @@ public function rules()
 }
 ```
 
+or dynamic
+```php
+$reCaptchaValidationModel = DynamicModel::validateData([Yii::$app->reCaptcha->name => $this->reCaptcha], [
+    [[Yii::$app->reCaptcha->name], \alikdex\recaptcha\ReCaptchaValidator::className()],
+]);
+
+if ($reCaptchaValidationModel->hasErrors())
+    return false;
+```
+
 or simply
 
 ```php
