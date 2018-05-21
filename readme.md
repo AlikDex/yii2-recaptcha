@@ -15,7 +15,7 @@ php composer.phar require --prefer-dist "alikdex/yii2-recaptcha" "1.0.0"
 or add
 
 ```json
-"alikdex/yii2-recaptcha" : "1.0.0"
+"alikdex/yii2-recaptcha" : "2.0.0"
 ```
 
 to the `require` section of your application's `composer.json` file.
@@ -28,13 +28,18 @@ If a siteKey or secret is set in an individual view or validation rule that woul
 
 ```php
 'components' => [
-    'reCaptcha' => [
-        'name' => 'reCaptcha',
-        'class' => 'alikdex\recaptcha\ReCaptcha',
-        'siteKey' => 'your siteKey',
-        'secret' => 'your secret key',
+    'container' => [
+        'definitions' => [
+            Adx\ReCaptcha\ReCaptcha::class => [
+                'siteKey' => '6Ld48x4TAAAAAAsvW66lknTuly_zpCkcy_LR1s9b',
+            ],
+            Adx\ReCaptcha\ReCaptchaValidator::class => [
+                'secret' => '6Ld48x4TAAAAALhq1eFiDaZI4l_-YDu1dXmHp1sL',
+            ],
+        ],
     ],
     ...
+],
 ```
 
 * Add `ReCaptchaValidator` in your model, for example:
@@ -46,7 +51,7 @@ public function rules()
 {
   return [
       // ...
-      [['reCaptcha'], \alikdex\recaptcha\ReCaptchaValidator::className(), 'secret' => 'your secret key']
+      [[captcha'], \Adx\ReCaptcha\ReCaptchaValidator::class],
   ];
 }
 ```
@@ -58,40 +63,17 @@ public function rules()
 {
   return [
       // ...
-      [[], \alikdex\recaptcha\ReCaptchaValidator::className(), 'secret' => 'your secret key']
+      [[], \Adx\ReCaptcha\ReCaptchaValidator::class],
   ];
 }
 ```
-
-or dynamic
-```php
-$reCaptchaValidationModel = DynamicModel::validateData([Yii::$app->reCaptcha->name => $this->reCaptcha], [
-    [[Yii::$app->reCaptcha->name], \alikdex\recaptcha\ReCaptchaValidator::className()],
-]);
-
-if ($reCaptchaValidationModel->hasErrors())
-    return false;
-```
-
-or simply
-
-```php
-public function rules()
-{
-  return [
-      // ...
-      [[], \alikdex\recaptcha\ReCaptchaValidator::className()]
-  ];
-}
-```
-
 Usage
 -----
 For example:
 
 ```php
-<?= \alikdex\recaptcha\ReCaptcha::widget([
-    'name' => 'reCaptcha', // optional
+<?= \Adx\ReCaptcha\ReCaptcha::widget([
+    'name' => 'captcha', // optional
     'widgetOptions' => [
       'class' => 'col-sm-offset-3',
       'data-theme' => 'dark',
@@ -103,15 +85,16 @@ For example:
 or
 
 ```php
-<?= $form->field($model, 'reCaptcha')->widget(\alikdex\recaptcha\ReCaptcha::className()) ?>
+<?= $form->field($model, 'captcha')->widget(\Adx\ReCaptcha\ReCaptcha::className()) ?>
 ```
 
 or simply
 
 ```php
-<?= \alikdex\recaptcha\ReCaptcha::widget() ?>
+<?= \Adx\ReCaptcha\ReCaptcha::widget() ?>
 ```
 
 Resources
 ---------
 * [Google reCAPTCHA](https://developers.google.com/recaptcha)
+* [Github ReCaptcha](https://github.com/google/recaptcha)
