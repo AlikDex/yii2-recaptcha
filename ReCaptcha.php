@@ -4,25 +4,23 @@
  * @copyright Copyright (c) 2016 AlikDex
  * @license http://opensource.org/licenses/MIT MIT
  */
-namespace alikdex\recaptcha;
+namespace Adx\ReCaptcha;
 
 use Yii;
-use yii\base\InvalidConfigException;
 
+use yii\web\View;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-
 use yii\widgets\InputWidget;
+use yii\base\InvalidConfigException;
+
 /**
  * Yii2 Google reCAPTCHA widget.
  *
  * For example:
  *
  * ```php
- * <?= $form->field($model, 'reCaptcha')->widget(
- *  ReCaptcha::className(),
- *  ['siteKey' => 'your siteKey']
- * ) ?>
+ * <?= $form->field($model, 'captcha')->widget(ReCaptcha::class) ?>
  * ```
  *
  * or
@@ -36,145 +34,138 @@ use yii\widgets\InputWidget;
  * ```
  *
  * @see https://developers.google.com/recaptcha
+ *
  * @author AlikDex
+ *
  * @package alikdex\recaptcha
  */
 class ReCaptcha extends InputWidget
 {
-	const JS_API_URL = '//www.google.com/recaptcha/api.js';
+    const JS_API_URL = '//www.google.com/recaptcha/api.js';
 
-	const THEME_LIGHT = 'light';
-	const THEME_DARK = 'dark';
+    const THEME_LIGHT = 'light';
+    const THEME_DARK = 'dark';
 
-	const TYPE_IMAGE = 'image';
-	const TYPE_AUDIO = 'audio';
+    const TYPE_IMAGE = 'image';
+    const TYPE_AUDIO = 'audio';
 
-	const SIZE_NORMAL = 'normal';
-	const SIZE_COMPACT = 'compact';
+    const SIZE_NORMAL = 'normal';
+    const SIZE_COMPACT = 'compact';
 
-	/**
-	 *	@var string validation input name.
-	 */
-	public $name = 'ReCaptcha';
+    /**
+     * @var string validation input name.
+     */
+    public $name = 'ReCaptcha';
 
-	/**
-	 *	@var string Your sitekey.
-	 */
-	public $siteKey;
+    /**
+     * @var string Your sitekey.
+     */
+    public $siteKey;
 
-	/**
-	 *	@var string Your secret.
-	 */
-	public $secret;
+    /**
+     * @var array Additional html widget options, such as `class`.
+     */
+    public $widgetOptions = [];
 
-	/**
-	 *	@var array Additional html widget options, such as `class`.
-	 */
-	public $widgetOptions = [];
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function init()
+    {
+        parent::init();
 
-	/**
-	 * @throws \yii\base\InvalidConfigException
-	 */
-	public function init()
-	{
-		parent::init();
+        if (null === $this->siteKey) {
+            throw new InvalidConfigException('Required `siteKey` param isn\'t set.');
+        }
+    }
 
-		if (null === $this->siteKey) {
-			if (null !== Yii::$app->reCaptcha->siteKey) {
-				$this->siteKey = Yii::$app->reCaptcha->siteKey;
-			} else {
-				throw new InvalidConfigException('Required `siteKey` param isn\'t set.');
-			}
-		}
-	}
+    public function run()
+    {
+        $this->registerClientScript();
 
-	public function run()
-	{
-		$this->registerClientScript();
+        $this->customFieldPrepare();
 
-		$this->customFieldPrepare();
+        $divOptions = [
+            'class' => 'g-recaptcha',
+            'data-sitekey' => $this->siteKey
+        ];
 
-		$divOptions = [
-			'class' => 'g-recaptcha',
-			'data-sitekey' => $this->siteKey
-		];
-		
-		if (isset($this->widgetOptions['class'])) {
-			Html::addCssClass($divOptions, $this->widgetOptions);
-			unset($this->widgetOptions['class']);
-		}
+        if (isset($this->widgetOptions['class'])) {
+            Html::addCssClass($divOptions, $this->widgetOptions);
+            unset($this->widgetOptions['class']);
+        }
 
-		$divOptions = ArrayHelper::merge($divOptions, $this->widgetOptions);
+        $divOptions = ArrayHelper::merge($divOptions, $this->widgetOptions);
 
-		echo Html::tag('div', '', $divOptions);
-	}
+        echo Html::tag('div', '', $divOptions);
+    }
 
-	/**
-	 * Registers required script for the plugin to work as jQuery File Uploader
-	 */
-	public function registerClientScript()
-	{
-		$this->getView()->registerJsFile(
-			self::JS_API_URL . '?hl=' . $this->getLanguageSuffix(),
-			[
-				'position' => \yii\web\View::POS_HEAD,
-				'async' => true,
-				'defer' => true
-			]
-		);
-	}
+    /**
+     * Registers required script for the plugin to work as jQuery File Uploader
+     */
+    public function registerClientScript()
+    {
+        $this->getView()->registerJsFile(
+            self::JS_API_URL . '?hl=' . $this->getLanguageSuffix(),
+            [
+                'position' => View::POS_HEAD,
+                'async' => true,
+                'defer' => true
+            ]
+        );
+    }
 
-	/**
-	 *	Check application language
-	 *	@return string
-	 */
-	protected function getLanguageSuffix()
-	{
-		$currentAppLanguage = Yii::$app->language;
-		$langsExceptions = ['zh-CN', 'zh-TW', 'zh-TW'];
+    /**
+     *    Check application language
+     *    @return string
+     */
+    protected function getLanguageSuffix()
+    {
+        $currentAppLanguage = Yii::$app->language;
+        $langsExceptions = ['zh-CN', 'zh-TW', 'zh-TW'];
 
-		if (strpos($currentAppLanguage, '-') === false) {
-			return $currentAppLanguage;
-		}
+        if (strpos($currentAppLanguage, '-') === false) {
+            return $currentAppLanguage;
+        }
 
-		if (in_array($currentAppLanguage, $langsExceptions)) {
-			return $currentAppLanguage;
-		} else {
-			return substr($currentAppLanguage, 0, strpos($currentAppLanguage, '-'));
-		}
-	}
+        if (in_array($currentAppLanguage, $langsExceptions)) {
+            return $currentAppLanguage;
+        } else {
+            return substr($currentAppLanguage, 0, strpos($currentAppLanguage, '-'));
+        }
+    }
 
-	protected function customFieldPrepare()
-	{
-		$view = $this->view;
+    protected function customFieldPrepare()
+    {
+        $view = $this->getView();
 
-		if ($this->hasModel()) {
-			$inputName = Html::getInputName($this->model, $this->attribute);
-			$inputId = Html::getInputId($this->model, $this->attribute);
-		} else {
-			$inputName = $this->name;
-			$inputId = 'recaptcha-' . $this->name;
-		}
+        if ($this->hasModel()) {
+            $inputName = Html::getInputName($this->model, $this->attribute);
+            $inputId = Html::getInputId($this->model, $this->attribute);
+        } else {
+            $inputName = $this->name;
+            $inputId = 'recaptcha-' . $this->name;
+        }
 
-		if (empty($this->widgetOptions['data-callback'])) {
-			$jsCode = "var recaptchaCallback = function(response){jQuery('#{$inputId}').val(response);};";
-		} else {
-			$jsCode = "var recaptchaCallback = function(response){jQuery('#{$inputId}').val(response); {$this->widgetOptions['data-callback']}(response);};";
-		}
+        if (empty($this->widgetOptions['data-callback'])) {
+            $jsCode = "var recaptchaCallback = function(response){jQuery('#{$inputId}').val(response);};";
+        } else {
+            $jsCode = "var recaptchaCallback = function(response){jQuery('#{$inputId}').val(response); {$this->widgetOptions['data-callback']}(response);};";
+        }
 
-		$this->widgetOptions['data-callback'] = 'recaptchaCallback';
+        $this->widgetOptions['data-callback'] = 'recaptchaCallback';
 
-		if (empty($this->widgetOptions['data-expired-callback'])) {
-			$jsExpCode = "var recaptchaExpiredCallback = function(){jQuery('#{$inputId}').val('');};";
-		} else {
-			$jsExpCode = "var recaptchaExpiredCallback = function(){jQuery('#{$inputId}').val(''); {$this->widgetOptions['data-expired-callback']}(response);};";
-		}
+        if (empty($this->widgetOptions['data-expired-callback'])) {
+            $jsExpCode = "var recaptchaExpiredCallback = function(){jQuery('#{$inputId}').val('');};";
+        } else {
+            $jsExpCode = "var recaptchaExpiredCallback = function(){jQuery('#{$inputId}').val(''); {$this->widgetOptions['data-expired-callback']}(response);};";
+        }
 
-		$this->widgetOptions['data-expired-callback'] = 'recaptchaExpiredCallback';
+        $this->widgetOptions['data-expired-callback'] = 'recaptchaExpiredCallback';
 
-		$view->registerJs($jsCode, $view::POS_BEGIN);
-		$view->registerJs($jsExpCode, $view::POS_BEGIN);
+        $view->registerJs($jsCode, $view::POS_BEGIN);
+        $view->registerJs($jsExpCode, $view::POS_BEGIN);
 
-		echo Html::input('hidden', $inputName, null, ['id' => $inputId]);
-	}
+        echo Html::input('hidden', $inputName, null, ['id' => $inputId]);
+    }
 }
