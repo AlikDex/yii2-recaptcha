@@ -85,7 +85,7 @@ For example:
 or
 
 ```php
-<?= $form->field($model, 'captcha')->widget(\Adx\ReCaptcha\ReCaptcha::className()) ?>
+<?= $form->field($model, 'captcha')->widget(\Adx\ReCaptcha\ReCaptcha::class) ?>
 ```
 
 or simply
