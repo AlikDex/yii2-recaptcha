@@ -31,10 +31,10 @@ If a siteKey or secret is set in an individual view or validation rule that woul
     'container' => [
         'definitions' => [
             Adx\ReCaptcha\ReCaptcha::class => [
-                'siteKey' => '6Ld48x4TAAAAAAsvW66lknTuly_zpCkcy_LR1s9b',
+                'siteKey' => 'Your site key',
             ],
             Adx\ReCaptcha\ReCaptchaValidator::class => [
-                'secret' => '6Ld48x4TAAAAALhq1eFiDaZI4l_-YDu1dXmHp1sL',
+                'secret' => 'Your secret key',
             ],
         ],
     ],
