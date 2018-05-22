@@ -1,4 +1,4 @@
-Google reCAPTCHA widget for Yii2 (without curl)
+Google reCAPTCHA widget for Yii2
 ================================
 Based on google reCaptcha API 2.0.
 
@@ -9,7 +9,7 @@ The preferred way to install this extension is through [composer](http://getcomp
 * Either run
 
 ```
-php composer.phar require --prefer-dist "alikdex/yii2-recaptcha" "1.0.0"
+php composer.phar require --prefer-dist "alikdex/yii2-recaptcha" "2.0.0"
 ```
 
 or add
@@ -51,7 +51,7 @@ public function rules()
 {
   return [
       // ...
-      [[captcha'], \Adx\ReCaptcha\ReCaptchaValidator::class],
+      [['captcha'], \Adx\ReCaptcha\ReCaptchaValidator::class],
   ];
 }
 ```
